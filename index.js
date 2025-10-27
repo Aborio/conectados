@@ -24,7 +24,6 @@ client.on('interactionCreate', async (interaction) => {
   if (interaction.commandName !== 'conectados') return;
 
   try {
-    // Evita timeout
     await interaction.deferReply({ ephemeral: false });
 
     const canal = interaction.options.getChannel('canal', true);
@@ -57,4 +56,10 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+/* 🔍 DEBUG DEL TOKEN EN RAILWAY */
+console.log("TOKEN RAW:", process.env.DISCORD_TOKEN);
+console.log("TOKEN LENGTH:", process.env.DISCORD_TOKEN?.length);
+/* -------------------------------- */
+
 client.login(process.env.DISCORD_TOKEN);
+
