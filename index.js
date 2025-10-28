@@ -28,6 +28,10 @@ client.on('interactionCreate', async (interaction) => {
 
     const canal = interaction.options.getChannel('canal', true);
 
+    // 👇 NUEVO: leer el parámetro opcional "eventos"
+    const eventos = interaction.options.getString('eventos')?.trim();
+    const eventosLinea = eventos ? `🗓️ **Eventos/Horarios:** ${eventos}\n` : '';
+
     if (![ChannelType.GuildVoice, ChannelType.GuildStageVoice].includes(canal.type)) {
       return interaction.editReply('❌ Debes elegir un **canal de voz**.');
     }
@@ -43,11 +47,15 @@ client.on('interactionCreate', async (interaction) => {
       ? apodos.map(n => `• ${n}`).join('\n')
       : 'No hay usuarios conectados.';
 
-    await interaction.editReply(`📢 **Canal:** ${canal.name}\n👥 **Cantidad:** ${cantidad}\n\n${lista}`);
+    await interaction.editReply(
+      `📌 **Canal:** ${canal.name}\n` +
+      eventosLinea +                      // 👈 NUEVO: incluir eventos en la respuesta
+      `👥 **Cantidad:** ${cantidad}\n\n` +
+      lista
+    );
 
   } catch (err) {
     console.error('❌ Error en /conectados:', err);
-
     if (interaction.deferred || interaction.replied) {
       await interaction.editReply('⚠️ Ocurrió un error procesando el comando.');
     } else {
@@ -55,10 +63,5 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 });
-
-/* 🔍 DEBUG DEL TOKEN EN RAILWAY */
-console.log("TOKEN RAW:", process.env.DISCORD_TOKEN);
-console.log("TOKEN LENGTH:", process.env.DISCORD_TOKEN?.length);
-/* -------------------------------- */
 
 client.login(process.env.DISCORD_TOKEN);
